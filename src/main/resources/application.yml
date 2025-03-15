@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.hubspot: DEBUG
+
+hubspot:
+  client-id: a7936b99-df92-4c4c-9d73-5577149f32eb
+  client-secret: 8af2d9d5-5a67-4a42-8a71-6de9497980cb
+  redirect-uri: http://localhost:8080/oauth/callback
+  auth-url: https://app.hubspot.com/oauth/authorize
+  token-url: https://api.hubapi.com/oauth/v1/token
+  api-url: https://api.hubapi.com
+
+
+#  https://app.hubspot.com/oauth/authorize?client_id=6ee675d7-0031-443e-8ed7-4dcecf67c7df&redirect_uri=http://localhost:8080/oauth/callback&scope=oauth
+#
+#OAUTH:
+#  https://app:
+#    hubspot:
+#      com/oauth/authorize?client_id=6ee675d7-0031-443e-8ed7-4dcecf67c7df&redirect_uri=http://localhost:8080/oauth/callback&scope=oauth:
