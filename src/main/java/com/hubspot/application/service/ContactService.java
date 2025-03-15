@@ -1,11 +1,11 @@
-package com.hubspot.adapter.out;
+package com.hubspot.application.service;
 
 import com.hubspot.application.port.ContactServicePort;
 import com.hubspot.config.HubspotConfig;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,6 @@ public class ContactService implements ContactServicePort {
     private final HubspotConfig hubspotConfig;
     private final RestTemplate restTemplate;
 
-
     public ContactService(HubspotConfig hubspotConfig, RestTemplate restTemplate) {
         this.hubspotConfig = hubspotConfig;
         this.restTemplate = restTemplate;
@@ -29,24 +28,32 @@ public class ContactService implements ContactServicePort {
 
     @Override
     public String createContact(String firstName, String lastName, String email, String accessToken) {
+        logger.info("Enviando contato para HubSpot: {}", email);
         String url = hubspotConfig.getApiUrl() + "/crm/v3/objects/contacts";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = createHeaders(accessToken);
+        HttpEntity<Map<String, Object>> request = createRequest(firstName, lastName, email, headers);
 
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        logger.info("Contato criado com sucesso: {}", response.getBody());
+        return response.getBody();
+    }
+
+    private HttpHeaders createHeaders(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(accessToken);
+        return headers;
+    }
+
+    private HttpEntity<Map<String, Object>> createRequest(String firstName, String lastName, String email,
+            HttpHeaders headers) {
         Map<String, Object> contactData = new HashMap<>();
-        Map<String, String> properties = new HashMap<>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put("firstname", firstName);
         properties.put("lastname", lastName);
         properties.put("email", email);
         contactData.put("properties", properties);
-        logger.info("Enviando requisição para criar contato: {}", properties);
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(contactData, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-        logger.debug("Resposta da API HubSpot: {}", response.getBody());
-        return response.getBody();
+        return new HttpEntity<>(contactData, headers);
     }
 }

@@ -1,7 +1,7 @@
 package com.hubspot.adapter.in;
 
 import com.hubspot.config.HubspotConfig;
-import com.hubspot.adapter.out.OAuthService;
+import com.hubspot.application.service.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
