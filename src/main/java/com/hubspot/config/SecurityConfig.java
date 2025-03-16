@@ -20,7 +20,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .mvcMatchers("/oauth/**", "/callback/**").permitAll()
+                        .mvcMatchers("/oauth/**", "/callback/**", "/contacts/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin().disable()
